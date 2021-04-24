@@ -13,7 +13,7 @@ class BlankFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ):View {
+    ):View? {
         // Inflate the layout for this fragment
         binding = FragmentBlankBinding.inflate(inflater,container,false)
         return binding.root
@@ -21,10 +21,30 @@ class BlankFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val followingListAdapter = RepositoryListAdapter()
+        binding.repositoryList.adapter=followingListAdapter
 
-        /*followingListAdapter = FollowingListAdapter()
+        followingListAdapter.repositoryList.addAll(
+            listOf<RepositoryInfo>(
+                RepositoryInfo(
+                    repositoryName = "웹프로그래밍",
+                    repositoryContent = "웹을 만들어보자",
+                    language = "HTML"
+                ),
+                RepositoryInfo(
+                    repositoryName = "앱프로그래밍",
+                    repositoryContent = "앱을 만들어보자",
+                    language = "Kotlin"
+                ),
+                RepositoryInfo(
+                    repositoryName = "서버프로그래밍",
+                    repositoryContent = "서버 만들어보자",
+                    language = "SQL"
+                )
 
-        binding.userList.adapter = followingListAdapter*/
+            )
+        )
+        followingListAdapter.notifyDataSetChanged()
     }
 
 }
