@@ -5,8 +5,13 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import api.ServiceCreator
 import com.example.myapplication.databinding.ActivitySignUpBinding
-import kotlinx.android.synthetic.main.activity_sign_up.*
+import request.RequestSignupData
+import request.ResponseSignupData
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
@@ -20,13 +25,39 @@ class SignUpActivity : AppCompatActivity() {
             var Id = binding.editTextTextPersonName3.text.toString()
             var Pw=binding.editTextTextPersonName4.text.toString()
             val intent3 = Intent(this, MainInActivity::class.java)
-            val informintent = Intent(this, MainInActivity::class.java)
             if(name.isNotBlank()&&Id.isNotBlank()&&Pw.isNotBlank())
             {
-                informintent.putExtra("name", name)
-                informintent.putExtra("Id", Id)
-                informintent.putExtra("Pw", Pw)
-                startActivity(intent3)
+                val requestSignupData = RequestSignupData(
+                    Id,
+                    Pw,
+                    "0",
+                    name,
+                    "010-0000-0000",
+                    "1999999"
+                )
+
+                val call = ServiceCreator.signUpService
+                    .postSignup(requestSignupData)
+
+                call.enqueue(object : Callback<ResponseSignupData>{
+                    override fun onResponse(
+                        call: Call<ResponseSignupData>,
+                        response: Response<ResponseSignupData>
+                    ) {
+                        if(response.isSuccessful)
+                        {
+                            Toast.makeText(this@SignUpActivity, "Success!", Toast.LENGTH_SHORT).show()
+                            startActivity(intent3)
+                        }
+                        else{
+                            Toast.makeText(this@SignUpActivity, "Retry!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ResponseSignupData>, t: Throwable) {
+                        TODO("Not yet implemented")
+                    }
+                })
             }
             else{
                 Toast.makeText(this, "빈칸이 있는지 확인해주세요", Toast.LENGTH_SHORT).show()
